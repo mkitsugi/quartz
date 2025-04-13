@@ -6,11 +6,14 @@ on:
       - v4
   workflow_dispatch:
 
+# GitHub Pagesへのデプロイ権限を設定
 permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
+# 同時実行を制御
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -41,6 +44,8 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
+        with:
+          enablement: true # GitHub Pagesを有効化
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
