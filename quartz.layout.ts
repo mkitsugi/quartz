@@ -37,7 +37,9 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      title: "メニュー",
+    }),
   ],
   right: [
     Component.Graph(),
