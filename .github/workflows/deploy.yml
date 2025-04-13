@@ -11,7 +11,6 @@ permissions:
   contents: read
   pages: write
   id-token: write
-  actions: read
 
 # 同時実行を制御
 concurrency:
@@ -19,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -28,7 +27,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for git info
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -44,14 +43,23 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
-        with:
-          enablement: true # GitHub Pagesを有効化
 
+      # 手動でアーティファクトをパッケージ化
+      - name: Package artifact
+        run: |
+          cd public
+          tar -czvf ../artifact.tar.gz .
+
+      # 直接アップロードアクションを使用
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          path: public
+          name: github-pages
+          path: artifact.tar.gz
+          retention-days: 1
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+        with:
+          artifact_name: github-pages
